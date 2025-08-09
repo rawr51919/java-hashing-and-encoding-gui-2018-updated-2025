@@ -53,7 +53,7 @@ jobs:
     if: github.ref_type == 'tag' || github.event.inputs.release_type == 'main' || github.event.inputs.release_type == 'pre'
     steps:
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: java-gui-builds
           path: target
