@@ -4,12 +4,8 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - '**.md'
-      - 'docs/**'
-      - '.github/**'
-      - '.vscode/**'
-
+    paths:
+      - '**.java'
   workflow_dispatch:
     inputs:
       release_type:
