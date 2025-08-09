@@ -1,0 +1,25 @@
+name: Compile and Build Java Projects
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4 # Checks out your repository code
+      name: Checkout code
+
+    - uses: actions/setup-java@v4
+      with:
+        java-version: '24' # Specify your desired Java version
+        distribution: 'temurin' # Choose a Java distribution (e.g., temurin, zulu)
+        cache: 'maven' # If using Maven for dependency management
+
+    - name: Compile Java code
+      run: |
+        javac -d target/classes CRencodingGUI.java
+        javac -d target/classes CRhashingGUI.java
