@@ -1,17 +1,15 @@
-name: Build and Release Java GUIs
+name: Compile, Build, and Release Java GUIs
 
 on:
   push:
     branches:
       - main
-    paths:
-      - '**.java'
   workflow_dispatch:
     inputs:
       release_type:
-        description: 'Type of release (main or pre)'
+        description: "Set to 'main' for main release, leave empty for pre-release"
         required: false
-        default: 'pre'
+        default: ""
 
 jobs:
   build:
@@ -26,66 +24,27 @@ jobs:
           java-version: '24'
           distribution: 'temurin'
 
-      # Build CRencodingGUI.jar (exclude CRhashingGUI.java)
+      # Build CRencodingGUI
       - name: Compile CRencodingGUI
         run: |
-          mkdir -p target/encoding
-          javac -d target/encoding $(find . -name "*.java" ! -name "CRhashingGUI.java")
-          jar cfe target/CRencodingGUI.jar CRencodingGUI -C target/encoding .
+          mkdir -p target/CRencodingGUI
+          javac -d target/CRencodingGUI $(find . -name "*.java" ! -name "CRhashingGUI.java")
+          jar cfe target/CRencodingGUI.jar CRencodingGUI -C target/CRencodingGUI .
 
-      # Build CRhashingGUI.jar (exclude CRencodingGUI.java)
+      # Build CRhashingGUI
       - name: Compile CRhashingGUI
         run: |
-          mkdir -p target/hashing
-          javac -d target/hashing $(find . -name "*.java" ! -name "CRencodingGUI.java")
-          jar cfe target/CRhashingGUI.jar CRhashingGUI -C target/hashing .
-
-      # Upload the built JAR files to GitHub and utilize for releases and pre-releases
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: java-gui-builds
-          path: target/*.jar
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.ref_type == 'tag' || github.event.inputs.release_type == 'main' || github.event.inputs.release_type == 'pre'
-    steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v5
-        with:
-          name: java-gui-builds
-          path: target
-
-      - name: Generate pre-release tag and description
-        id: version
-        run: |
-          COMMIT_HASH=$(git rev-parse --short HEAD)
-          COMMIT_MSG=$(git log -1 --pretty=%B)
-          COMMIT_URL="https://github.com/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}"
-
-          if [[ "${{ github.event.inputs.release_type }}" != "main" && "${{ github.ref_type }}" != "tag" ]]; then
-            TAG="pre-$(date -u +'%Y%m%d-%H%M')"
-            PRERELEASE=true
-          else
-            TAG="${GITHUB_REF_NAME}"
-            PRERELEASE=false
-          fi
-
-          DESC="**Commit:** [$COMMIT_HASH]($COMMIT_URL)\n**Message:** ${COMMIT_MSG}"
-
-          echo "tag_name=$TAG" >> $GITHUB_OUTPUT
-          echo "prerelease=$PRERELEASE" >> $GITHUB_OUTPUT
-          echo "description=$DESC" >> $GITHUB_OUTPUT
+          mkdir -p target/CRhashingGUI
+          javac -d target/CRhashingGUI $(find . -name "*.java" ! -name "CRencodingGUI.java")
+          jar cfe target/CRhashingGUI.jar CRhashingGUI -C target/CRhashingGUI .
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.version.outputs.tag_name }}
-          name: ${{ steps.version.outputs.tag_name }}
-          prerelease: ${{ steps.version.outputs.prerelease }}
-          body: ${{ steps.version.outputs.description }}
-          files: target/*.jar
+          tag_name: build-${{ github.run_number }}
+          prerelease: ${{ inputs.release_type != 'main' }}
+          files: |
+            target/CRencodingGUI.jar
+            target/CRhashingGUI.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
