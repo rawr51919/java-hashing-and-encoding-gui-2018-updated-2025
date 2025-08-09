@@ -4,12 +4,16 @@ on:
   push:
     branches:
       - main
+
   workflow_dispatch:
     inputs:
       release_type:
         description: "Set to 'main' for main release, leave empty for pre-release"
         required: false
         default: ""
+
+permissions:
+  contents: write   # needed to create releases
 
 jobs:
   build:
