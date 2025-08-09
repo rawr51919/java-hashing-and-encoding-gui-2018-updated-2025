@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<drjava version="drjava-20190813-220051">
+  <project autorefresh="false" build="build" main="CRencodingGUI" manifest="" root="" work="">
+    <createjar file="Hashing &amp; Encoding GUI (Build 4).jar" flags="12"/>
+    <source>
+      <file active="true" name="CRencodingGUI.java" package="" timestamp="09-Aug-2025 13:25:34">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="fr/cryptohash/WhirlpoolTables.java" package="fr.cryptohash" timestamp="08-Aug-2025 10:59:19">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="at/favre/lib/encoding/Base122.java" package="at.favre.lib.encoding" timestamp="09-Aug-2025 11:49:23">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="org/kc7bfi/jflac/util/CRC8.java" package="org.kc7bfi.jflac.util" timestamp="09-Aug-2025 12:48:58">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="org/apache/commons/codec/digest/MessageDigestAlgorithms.java" package="org.apache.commons.codec.digest" timestamp="09-Aug-2025 12:48:58">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="org/apache/commons/codec/digest/DigestUtils.java" package="org.apache.commons.codec.digest" timestamp="07-Aug-2025 15:32:56">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="org/apache/commons/codec/binary/StringUtils.java" package="org.apache.commons.codec.binary" timestamp="09-Aug-2025 12:48:58">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="org/apache/commons/codec/binary/Hex.java" package="org.apache.commons.codec.binary" timestamp="09-Aug-2025 12:48:58">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="org/apache/commons/codec/binary/CharSequenceUtils.java" package="org.apache.commons.codec.binary" timestamp="07-Aug-2025 15:01:13">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="org/apache/commons/codec/binary/BaseNCodecOutputStream.java" package="org.apache.commons.codec.binary" timestamp="07-Aug-2025 11:21:07">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="org/apache/commons/codec/binary/BaseNCodecInputStream.java" package="org.apache.commons.codec.binary" timestamp="09-Aug-2025 12:48:58">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="org/apache/commons/codec/binary/BaseNCodec.java" package="org.apache.commons.codec.binary" timestamp="09-Aug-2025 12:48:58">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="org/apache/commons/codec/binary/Base32OutputStream.java" package="org.apache.commons.codec.binary" timestamp="12-May-2018 21:32:04">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="org/apache/commons/codec/binary/Base32InputStream.java" package="org.apache.commons.codec.binary" timestamp="12-May-2018 21:32:04">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="org/apache/commons/codec/binary/Base32.java" package="org.apache.commons.codec.binary" timestamp="09-Aug-2025 12:48:58">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="org/apache/commons/codec/EncoderException.java" package="org.apache.commons.codec" timestamp="12-May-2018 21:41:34">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="org/apache/commons/codec/Encoder.java" package="org.apache.commons.codec" timestamp="12-May-2018 21:43:00">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="org/apache/commons/codec/DecoderException.java" package="org.apache.commons.codec" timestamp="12-May-2018 21:41:34">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="org/apache/commons/codec/Decoder.java" package="org.apache.commons.codec" timestamp="09-Aug-2025 12:48:58">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="org/apache/commons/codec/Charsets.java" package="org.apache.commons.codec" timestamp="09-Aug-2025 12:48:58">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="org/apache/commons/codec/CharEncoding.java" package="org.apache.commons.codec" timestamp="09-Aug-2025 12:48:58">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="org/apache/commons/codec/BinaryEncoder.java" package="org.apache.commons.codec" timestamp="09-Aug-2025 12:48:58">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="org/apache/commons/codec/BinaryDecoder.java" package="org.apache.commons.codec" timestamp="09-Aug-2025 12:48:58">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="jcifs/util/MD4.java" package="jcifs.util" timestamp="08-Aug-2025 10:47:50">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="jcifs/util/Hexdump.java" package="jcifs.util" timestamp="09-Aug-2025 12:48:58">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="de/bwaldvogel/base91/Base91.java" package="de.bwaldvogel.base91" timestamp="09-Aug-2025 11:54:12">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="com/xyz/XYZMessageDigest.java" package="com.xyz" timestamp="09-Aug-2025 11:53:24">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="com/orwell/util/Ascii85OutputStream.java" package="com.orwell.util" timestamp="07-Aug-2025 13:41:43">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="com/orwell/util/Ascii85InputStream.java" package="com.orwell.util" timestamp="07-Aug-2025 13:37:10">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="com/orwell/util/Ascii85.java" package="com.orwell.util" timestamp="09-Aug-2025 11:52:07">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="com/amazonaws/util/CodecUtils.java" package="com.amazonaws.util" timestamp="07-Aug-2025 13:44:39">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="com/amazonaws/util/Codec.java" package="com.amazonaws.util" timestamp="07-Aug-2025 13:44:22">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="com/amazonaws/util/Base16Lower.java" package="com.amazonaws.util" timestamp="07-Aug-2025 12:54:19">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="com/amazonaws/util/Base16Codec.java" package="com.amazonaws.util" timestamp="07-Aug-2025 13:12:46">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="com/amazonaws/util/Base16.java" package="com.amazonaws.util" timestamp="09-Aug-2025 11:49:26">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="rawr/util/Base93.java" package="rawr.util" timestamp="09-Aug-2025 12:48:58">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="byte_transforms/CRC64.java" package="byte_transforms" timestamp="09-Aug-2025 11:49:20">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="godlikeblock/util/CRC16.java" package="godlikeblock.util" timestamp="07-Aug-2025 14:37:19">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="fr/cryptohash/WhirlpoolCore.java" package="fr.cryptohash" timestamp="08-Aug-2025 10:38:06">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="fr/cryptohash/Whirlpool1.java" package="fr.cryptohash" timestamp="08-Aug-2025 10:41:40">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="fr/cryptohash/Whirlpool0.java" package="fr.cryptohash" timestamp="08-Aug-2025 10:41:33">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="fr/cryptohash/Whirlpool.java" package="fr.cryptohash" timestamp="08-Aug-2025 10:40:15">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="fr/cryptohash/TigerCore.java" package="fr.cryptohash" timestamp="07-Aug-2025 15:57:22">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="fr/cryptohash/Tiger2.java" package="fr.cryptohash" timestamp="29-May-2018 18:36:32">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="fr/cryptohash/Tiger.java" package="fr.cryptohash" timestamp="29-May-2018 18:36:32">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="fr/cryptohash/SHA0.java" package="fr.cryptohash" timestamp="07-Aug-2025 15:54:06">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="fr/cryptohash/MDHelper.java" package="fr.cryptohash" timestamp="09-Aug-2025 11:57:41">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="fr/cryptohash/DigestEngine.java" package="fr.cryptohash" timestamp="07-Aug-2025 13:59:46">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="fr/cryptohash/Digest.java" package="fr.cryptohash" timestamp="07-Aug-2025 13:58:47">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="fr/cryptohash/RIPEMD.java" package="fr.cryptohash" timestamp="09-Aug-2025 11:58:00">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="fr/cryptohash/RIPEMD160.java" package="fr.cryptohash" timestamp="07-Aug-2025 15:49:39">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="fr/cryptohash/RIPEMD128.java" package="fr.cryptohash" timestamp="09-Aug-2025 11:58:26">
+        <select from="757" to="757"/>
+        <scroll column="0" row="0"/>
+      </file>
+    </source>
+    <included/>
+    <excluded/>
+    <collapsed>
+      <path name="./[ Source Files ]/at/"/>
+      <path name="./[ Source Files ]/byte_transforms/"/>
+      <path name="./[ Source Files ]/com/amazonaws/util/"/>
+      <path name="./[ Source Files ]/com/amazonaws/"/>
+      <path name="./[ Source Files ]/com/orwell/"/>
+      <path name="./[ Source Files ]/com/xyz/"/>
+      <path name="./[ Source Files ]/com/"/>
+      <path name="./[ Source Files ]/de/bwaldvogel/base91/"/>
+      <path name="./[ Source Files ]/de/bwaldvogel/"/>
+      <path name="./[ Source Files ]/de/"/>
+      <path name="./[ Source Files ]/fr/cryptohash/"/>
+      <path name="./[ Source Files ]/fr/"/>
+      <path name="./[ Source Files ]/godlikeblock/"/>
+      <path name="./[ Source Files ]/jcifs/util/"/>
+      <path name="./[ Source Files ]/jcifs/"/>
+      <path name="./[ Source Files ]/org/apache/commons/codec/binary/"/>
+      <path name="./[ Source Files ]/org/apache/commons/codec/digest/"/>
+      <path name="./[ Source Files ]/org/apache/commons/codec/"/>
+      <path name="./[ Source Files ]/org/apache/commons/"/>
+      <path name="./[ Source Files ]/org/apache/"/>
+      <path name="./[ Source Files ]/org/kc7bfi/"/>
+      <path name="./[ Source Files ]/org/"/>
+      <path name="./[ Source Files ]/rawr/util/"/>
+      <path name="./[ Source Files ]/rawr/"/>
+    </collapsed>
+    <classpath/>
+    <breakpoints/>
+    <watches/>
+    <bookmarks/>
+    <preferences/>
+  </project>
+</drjava>
