@@ -1,9 +1,15 @@
-name: Build and Release Java Hashing/Encoding GUIs
+name: Build and Release Java GUIs
 
 on:
   push:
     branches:
       - main
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.github/**'
+      - '.vscode/**'
+
   workflow_dispatch:
     inputs:
       release_type:
