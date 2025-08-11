@@ -167,32 +167,45 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
-      - name: Download Linux artifacts
+      - name: Download Linux encoding GUI installer
         uses: actions/download-artifact@v4
         with:
           name: crencodinggui-linux
 
-      - uses: actions/download-artifact@v4
+      - name: Download Linux hashing GUI installer
+        uses: actions/download-artifact@v4
         with:
           name: crhashinggui-linux
 
-      - name: Download Windows artifacts
+      - name: Download Windows encoding GUI installer
         uses: actions/download-artifact@v4
         with:
           name: crencodinggui-windows
 
-      - uses: actions/download-artifact@v4
+      - name: Download Windows hashing GUI installer
+        uses: actions/download-artifact@v4
         with:
           name: crhashinggui-windows
 
-      - name: Download macOS artifacts
+      - name: Download MacOS encoding GUI installer
         uses: actions/download-artifact@v4
         with:
           name: crencodinggui-macos
 
-      - uses: actions/download-artifact@v4
+      - name: Download MacOS hashing GUI installer
+        uses: actions/download-artifact@v4
         with:
           name: crhashinggui-macos
+
+      - name: Download encoding GUI JAR
+        uses: actions/download-artifact@v4
+        with:
+          name: CRencodingGUI.jar
+
+      - name: Download hashing GUI JAR
+        uses: actions/download-artifact@v4
+        with:
+          name: CRhashingGUI.jar
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
