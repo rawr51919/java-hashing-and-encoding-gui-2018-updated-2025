@@ -59,6 +59,7 @@ import com.orwell.util.Ascii85;
 import de.bwaldvogel.base91.Base91;
 import rawr.util.Base93;
 import at.favre.lib.encoding.Base122;
+import org.apache.geronimo.mail.util.UUEncode;
 import org.mesh4j.sync.utils.YEnc;
 // MD2-SHA512 hash imports
 import org.apache.commons.codec.digest.DigestUtils;
@@ -149,6 +150,7 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 	protected static String base91string;
 	protected static String base93string;
 	protected static String base122string;
+	protected static String uuencodestring;
 	protected static String yencstring;
 	protected File file;
 	protected static File outputfile;
@@ -440,6 +442,7 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 		log.append("basE91: " + base91string + "\n");
 		log.append("Base93: " + base93string + "\n");
 		log.append("Base122: " + base122string + "\n");
+		log.append("UUEncode: " + uuencodestring + "\n");
 		log.append("yEnc: " + yencstring + "\n");
 	}
 
@@ -599,6 +602,8 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 			base93string = new String(base93);
 			String base122 = b122.encode(filebytes);
 			base122string = base122;
+			byte[] uuenc = UUEncode.encode(filebytes);
+			uuencodestring = new String(uuenc);
 			tryEncodeYenc(filebytes);
 			// if the file suddenly doesn't exist, or if an I/O error occurred
 		} catch (IOException e) {
@@ -735,6 +740,8 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 		base93string = new String(base93);
 		String base122 = b122.encode(stringbytes);
 		base122string = base122;
+		byte[] uuenc = UUEncode.encode(stringbytes);
+		uuencodestring = new String(uuenc);
 		try {
 			byte[] yenc = eyenc.encode(stringbytes);
 			yencstring = new String(yenc);
