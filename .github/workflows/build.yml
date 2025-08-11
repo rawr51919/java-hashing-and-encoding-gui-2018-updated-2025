@@ -44,7 +44,7 @@ jobs:
           cd target/installer/linux
           zip -r CRencodingGUI-linux.zip CRencodingGUI
           zip -r CRhashingGUI-linux.zip CRhashingGUI
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: linux-installers
           path: target/installer/linux/*.zip
@@ -72,7 +72,7 @@ jobs:
           mkdir target\installer\windows
           jpackage --name CRencodingGUI --input target --main-jar CRencodingGUI.jar --main-class CRencodingGUI --type msi --dest target\installer\windows
           jpackage --name CRhashingGUI --input target --main-jar CRhashingGUI.jar --main-class CRhashingGUI --type msi --dest target\installer\windows
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: windows-installers
           path: target\installer\windows\*
@@ -100,7 +100,7 @@ jobs:
           mkdir -p target/installer/macos
           jpackage --name CRencodingGUI --input target --main-jar CRencodingGUI.jar --main-class CRencodingGUI --type dmg --dest target/installer/macos
           jpackage --name CRhashingGUI --input target --main-jar CRhashingGUI.jar --main-class CRhashingGUI --type dmg --dest target/installer/macos
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: macos-installers
           path: target/installer/macos/*
@@ -109,15 +109,15 @@ jobs:
     needs: [build-linux, build-windows, build-macos]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v5
         with:
           name: linux-installers
           path: target/installer/linux
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v5
         with:
           name: windows-installers
           path: target/installer/windows
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v5
         with:
           name: macos-installers
           path: target/installer/macos
