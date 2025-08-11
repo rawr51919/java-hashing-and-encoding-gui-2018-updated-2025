@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.Insets;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
+import java.awt.GraphicsEnvironment;
 // AWT event imports
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -180,6 +181,10 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 	public static final YEnc eyenc = new YEnc();
 
 	public static void main(String[] args) {
+        if (GraphicsEnvironment.isHeadless()) {
+            logger.severe("Error: This GUI cannot be run in headless mode.");
+            System.exit(1);
+        }
 		SwingUtilities.invokeLater(() -> {
 			try {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

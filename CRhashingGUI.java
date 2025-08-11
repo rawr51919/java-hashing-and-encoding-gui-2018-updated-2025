@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.Insets;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
+import java.awt.GraphicsEnvironment;
 // AWT event imports
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -110,6 +111,10 @@ public class CRhashingGUI extends JPanel implements ActionListener {
 	public static final XYZMessageDigest exyz = new XYZMessageDigest();
 
 	public static void main(String[] args) {
+        if (GraphicsEnvironment.isHeadless()) {
+            logger.severe("Error: This GUI cannot be run in headless mode.");
+            System.exit(1);
+        }
 		SwingUtilities.invokeLater(() -> {
 			try {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
