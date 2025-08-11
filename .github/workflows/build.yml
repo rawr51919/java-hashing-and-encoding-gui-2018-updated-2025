@@ -43,11 +43,20 @@ jobs:
           jar cfe target/CRhashingGUI.jar CRhashingGUI -C target/CRhashingGUI .
 
       # Test builds
-      - name: Test CRencodingGUI jar
-        run: java -jar target/CRencodingGUI.jar || true
+      - name: Install Xvfb
+        run: sudo apt-get update && sudo apt-get-upgrade -y && sudo apt-get install -y xvfb
 
-      - name: Test CRhashingGUI jar
-        run: java -jar target/CRhashingGUI.jar || true
+      - name: Test CRencodingGUI jar with Xvfb
+        run: |
+          Xvfb :99 -screen 0 1024x768x24 &
+          export DISPLAY=:99
+          java -jar target/CRencodingGUI.jar || true
+
+      - name: Test CRhashingGUI jar with Xvfb
+        run: |
+          Xvfb :99 -screen 0 1024x768x24 &
+          export DISPLAY=:99
+          java -jar target/CRhashingGUI.jar || true
 
       # Create release with functional JARs
       - name: Create GitHub Release
