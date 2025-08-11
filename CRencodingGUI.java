@@ -329,7 +329,7 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 		creditspanel.add(creditslabel);
 
 		creditsframe.add(creditspanel);
-		creditsframe.setSize(800, 260);
+		creditsframe.setSize(800, 270);
 		creditsframe.setVisible(true);
 	}
 
