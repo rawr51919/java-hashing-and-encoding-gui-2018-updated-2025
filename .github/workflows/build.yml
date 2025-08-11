@@ -57,13 +57,14 @@ jobs:
           name: crhashinggui-linux
           path: target/installer/linux/CRhashingGUI-linux.zip
 
-      - name: Upload JARs
+      - name: Upload encoding GUI JAR
         uses: actions/upload-artifact@v4
         with:
           name: crencodinggui-linux-jar
           path: target/CRencodingGUI.jar
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload hashing GUI JAR
+        uses: actions/upload-artifact@v4
         with:
           name: crhashinggui-linux-jar
           path: target/CRhashingGUI.jar
