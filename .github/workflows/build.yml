@@ -53,12 +53,14 @@ jobs:
       - name: Test CRencodingGUI jar with Xvfb
         run: |
           Xvfb :99 -screen 0 1024x768x24 &
+          sleep 3
           export DISPLAY=:99
           java -jar target/CRencodingGUI.jar || true
 
       - name: Test CRhashingGUI jar with Xvfb
         run: |
           Xvfb :99 -screen 0 1024x768x24 &
+          sleep 3
           export DISPLAY=:99
           java -jar target/CRhashingGUI.jar || true
 
