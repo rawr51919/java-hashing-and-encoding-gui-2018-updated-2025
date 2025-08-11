@@ -46,13 +46,14 @@ jobs:
           zip -r target/installer/linux/CRencodingGUI-linux.zip target/installer/linux/CRencodingGUI-linux
           zip -r target/installer/linux/CRhashingGUI-linux.zip target/installer/linux/CRhashingGUI-linux
 
-      - name: Upload Linux artifacts
+      - name: Upload Linux encoding GUI installer
         uses: actions/upload-artifact@v4
         with:
           name: crencodinggui-linux
           path: target/installer/linux/CRencodingGUI-linux.zip
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload Linux hashing GUI installer
+        uses: actions/upload-artifact@v4
         with:
           name: crhashinggui-linux
           path: target/installer/linux/CRhashingGUI-linux.zip
@@ -108,13 +109,14 @@ jobs:
             Rename-Item $_.FullName $newName
           }
 
-      - name: Upload Windows artifacts
+      - name: Upload Windows encoding GUI installer
         uses: actions/upload-artifact@v4
         with:
           name: crencodinggui-windows
           path: target\installer\windows\CRencodingGUI-windows.msi
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload Windows hashing GUI installer
+        uses: actions/upload-artifact@v4
         with:
           name: crhashinggui-windows
           path: target\installer\windows\CRhashingGUI-windows.msi
@@ -149,13 +151,14 @@ jobs:
             mv "$dmg" "$newname"
           done
 
-      - name: Upload macOS artifacts
+      - name: Upload macOS encoding GUI installer
         uses: actions/upload-artifact@v4
         with:
           name: crencodinggui-macos
           path: target/installer/macos/CRencodingGUI-macos.dmg
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload macOS hashing GUI installer
+        uses: actions/upload-artifact@v4
         with:
           name: crhashinggui-macos
           path: target/installer/macos/CRhashingGUI-macos.dmg
