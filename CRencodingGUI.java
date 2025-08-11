@@ -602,8 +602,10 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 			base93string = new String(base93);
 			String base122 = b122.encode(filebytes);
 			base122string = base122;
+			// UUEncode normally newlines the hash every 45 characters,
+			// remove these so it shows up properly in our GUI window
 			byte[] uuenc = UUEncode.encode(filebytes);
-			uuencodestring = new String(uuenc);
+			uuencodestring = new String(uuenc).replaceAll("\\R", "");
 			tryEncodeYenc(filebytes);
 			// if the file suddenly doesn't exist, or if an I/O error occurred
 		} catch (IOException e) {
@@ -740,8 +742,10 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 		base93string = new String(base93);
 		String base122 = b122.encode(stringbytes);
 		base122string = base122;
+		// UUEncode normally newlines the hash every 45 characters,
+		// remove these so it shows up properly in our GUI window
 		byte[] uuenc = UUEncode.encode(stringbytes);
-		uuencodestring = new String(uuenc);
+		uuencodestring = new String(uuenc).replaceAll("\\R", "");
 		try {
 			byte[] yenc = eyenc.encode(stringbytes);
 			yencstring = new String(yenc);
