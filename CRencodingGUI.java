@@ -33,6 +33,8 @@ import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 // BigInteger import
 import java.math.BigInteger;
+// Charset imports
+import java.nio.charset.StandardCharsets;
 // Hash class imports
 import org.kc7bfi.jflac.util.CRC8;
 import godlikeblock.util.CRC16;
@@ -192,7 +194,8 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 		JFrame frame = new JFrame("Hashing/Encoding GUI");
 		frame.setDefaultCloseOperation(3); // JFrame.EXIT_ON_CLOSE
 		frame.add(new CRencodingGUI());
-		frame.setPreferredSize(new Dimension(1250, 640)); // set the JFrame size so that way you don't have to resize it every time you load the GUI
+		frame.setPreferredSize(new Dimension(1260, 640)); // set the JFrame size so that way you don't have to resize it
+															// every time you load the GUI
 		frame.setFont(new Font("Arial", Font.PLAIN, 20));
 		frame.pack();
 		frame.setVisible(true);
@@ -208,7 +211,7 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 		// create buttons and import icons
 		openButton = new JButton("Open a File...", createImageIcon("images/Open16.gif"));
 		stringButton = new JButton("Hash a String...");
-		saveButton = new JButton("Save a File's Hashes/Encoded Strings As...", createImageIcon("images/Save16.gif"));
+		saveButton = new JButton("Save Hashes/Encoded Strings As...", createImageIcon("images/Save16.gif"));
 		creditsButton = new JButton("Credits...");
 		clearButton = new JButton("Clear Log...");
 		// set up ActionListeners
@@ -293,8 +296,10 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 		JLabel creditslabel = new JLabel(
 				"<html><div style='text-align: center'>Credits:<br>" +
 						"This GUI: rawr51919<br>" +
-						"Based on the FileChooserDemo2 project (https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html#FileChooserDemo2)" +
-						"Original project part of the Java Swing tutorial on file choosers (https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html)" +
+						"Based on the FileChooserDemo2 project (https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html#FileChooserDemo2)"
+						+
+						"Original project part of the Java Swing tutorial on file choosers (https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html)"
+						+
 						"CRC8 Library: JustFLAC (https://github.com/drogatkin/JustFLAC)<br>" +
 						"CRC16 Library: Original code by Taha Paksu (http://www.tahapaksu.com/crc) and ported by Ethan Trithon (https://github.com/ethantrithon)<br>"
 						+
@@ -309,7 +314,8 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 						"Base32 Library: Apache Commons (https://commons.apache.org)<br>" +
 						"Base85 Library: Orwell Security Library (https://www.programcreek.com/java-api-examples/index.php?source_dir=orwell-master/Orwell)<br>(Newer library at https://github.com/fzakaria/ascii85)<br>"
 						+
-						"basE91 Library: rawr51919 (Modified from Benedikt Waldvogel's version @ https://github.com/bwaldvogel/base91)<br>" +
+						"basE91 Library: rawr51919 (Modified from Benedikt Waldvogel's version @ https://github.com/bwaldvogel/base91)<br>"
+						+
 						"Original basE91 Library: Joachim Henke (http://base91.sourceforge.net)<br>" +
 						"Base93 Library: rawr51919 (Modified from Benedikt Waldvogel's basE91 library which was modified from Joachim Henke's basE91 library)</html>");
 
@@ -440,158 +446,165 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 			// if they don't
 		} else {
 			if (logger.isLoggable(Level.SEVERE)) {
-				logger.severe(String.format("Couldn't find file: %s", path)); // report in the console that they don't exist
+				logger.severe(String.format("Couldn't find file: %s", path)); // report in the console that they don't
+																				// exist
 			}
 			return null; // display blank images
 		}
 	}
 
-	private static void getHashes(FileInputStream filestream) {
-		ByteArrayOutputStream filebytestream = new ByteArrayOutputStream();
-		int byteread;
-		byte[] filebytes;
-		try {
-			filebytes = filestream.readAllBytes();
-			while ((byteread = filestream.read(filebytes, 0, filebytes.length)) != -1) {
-				filebytestream.write(filebytes, 0, byteread);
+	private static byte[] readFileBytes(FileInputStream filestream) throws IOException {
+		String javaVersion = System.getProperty("java.version");
+		if (javaVersion.startsWith("1.") || javaVersion.compareTo("9") < 0) {
+			// Java 8 or below: use manual read loop
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			// 8 MB buffer used
+			byte[] buffer = new byte[8192];
+			int bytesRead;
+			while ((bytesRead = filestream.read(buffer)) != -1) {
+				baos.write(buffer, 0, bytesRead);
 			}
-			filebytestream.close();
+			return baos.toByteArray();
+		} else {
+			// Java 9 or above: use readAllBytes()
+			return filestream.readAllBytes();
+		}
+	}
+
+	private static void getHashes(FileInputStream filestream) {
+		try {
+			byte[] filebytes = readFileBytes(filestream);
+			// generate the hashes/encoded strings and output them to their respective
+			// strings, doing whatever operations are needed to make them display correctly
+			int crc8int = CRC8.calc(filebytes, filebytes.length) & 0xff;
+			crc8string = String.format("%02X", crc8int);
+			int crc16int = e16.update(filebytes);
+			crc16string = String.format("%04X", crc16int);
+			e32.update(filebytes);
+			long crc32long = e32.getValue();
+			crc32string = String.format("%08X", crc32long);
+			ae32.update(filebytes);
+			long adler32long = ae32.getValue();
+			adler32string = String.format("%08X", adler32long);
+			e64.update(filebytes);
+			long crc64long = e64.getValue();
+			crc64string = String.format("%016X", crc64long);
+			md2string = DigestUtils.md2Hex(filebytes).toUpperCase();
+			e4.engineUpdate(filebytes, 0, filebytes.length);
+			byte[] md4hashbytes = e4.engineDigest();
+			md4string = Hexdump.toHexString(md4hashbytes, 0, md4hashbytes.length * 2);
+			exyz.engineUpdate(filebytes, 0, filebytes.length);
+			byte[] xyzhashbytes = exyz.engineDigest();
+			xyzstring = Hexdump.toHexString(xyzhashbytes, 0, xyzhashbytes.length * 2);
+			md5string = DigestUtils.md5Hex(filebytes).toUpperCase();
+			ermd.update(filebytes);
+			byte[] ripemdbytes = ermd.digest();
+			ripemdstring = Hexdump.toHexString(ripemdbytes, 0, ripemdbytes.length * 2);
+			e128.update(filebytes);
+			byte[] ripemd128bytes = e128.digest();
+			ripemd128string = Hexdump.toHexString(ripemd128bytes, 0, ripemd128bytes.length * 2);
+			e160.update(filebytes);
+			byte[] ripemd160bytes = e160.digest();
+			ripemd160string = Hexdump.toHexString(ripemd160bytes, 0, ripemd160bytes.length * 2);
+			e0.update(filebytes);
+			byte[] sha0bytes = e0.digest();
+			sha0string = Hexdump.toHexString(sha0bytes, 0, sha0bytes.length * 2);
+			sha1string = DigestUtils.sha1Hex(filebytes).toUpperCase();
+			sha224string = DigestUtils.sha224Hex(filebytes).toUpperCase();
+			sha256string = DigestUtils.sha256Hex(filebytes).toUpperCase();
+			sha384string = DigestUtils.sha384Hex(filebytes).toUpperCase();
+			sha512string = DigestUtils.sha512Hex(filebytes).toUpperCase();
+			et.update(filebytes);
+			byte[] tigerbytes = et.digest();
+			tigerstring = Hexdump.toHexString(tigerbytes, 0, tigerbytes.length * 2);
+			et2.update(filebytes);
+			byte[] tiger2bytes = et2.digest();
+			tiger2string = Hexdump.toHexString(tiger2bytes, 0, tiger2bytes.length * 2);
+			ew1.update(filebytes);
+			byte[] whirlpool0bytes = ew1.digest();
+			whirlpool0string = Hexdump.toHexString(whirlpool0bytes, 0, whirlpool0bytes.length * 2);
+			ew2.update(filebytes);
+			byte[] whirlpool1bytes = ew2.digest();
+			whirlpool1string = Hexdump.toHexString(whirlpool1bytes, 0, whirlpool1bytes.length * 2);
+			ew.update(filebytes);
+			byte[] whirlpoolbytes = ew.digest();
+			whirlpoolstring = Hexdump.toHexString(whirlpoolbytes, 0, whirlpoolbytes.length * 2);
+			base15upperstring = new BigInteger(1, filebytes).toString(15).toUpperCase();
+			base15lowerstring = new BigInteger(1, filebytes).toString(15);
+			byte[] base16upper = Base16.encode(filebytes);
+			base16upperstring = new String(base16upper);
+			byte[] base16lower = Base16Lower.encode(filebytes);
+			base16lowerstring = new String(base16lower);
+			base17upperstring = new BigInteger(1, filebytes).toString(17).toUpperCase();
+			base17lowerstring = new BigInteger(1, filebytes).toString(17);
+			base18upperstring = new BigInteger(1, filebytes).toString(18).toUpperCase();
+			base18lowerstring = new BigInteger(1, filebytes).toString(18);
+			base19upperstring = new BigInteger(1, filebytes).toString(19).toUpperCase();
+			base19lowerstring = new BigInteger(1, filebytes).toString(19);
+			base20upperstring = new BigInteger(1, filebytes).toString(20).toUpperCase();
+			base20lowerstring = new BigInteger(1, filebytes).toString(20);
+			base21upperstring = new BigInteger(1, filebytes).toString(21).toUpperCase();
+			base21lowerstring = new BigInteger(1, filebytes).toString(21);
+			base22upperstring = new BigInteger(1, filebytes).toString(22).toUpperCase();
+			base22lowerstring = new BigInteger(1, filebytes).toString(22);
+			base23upperstring = new BigInteger(1, filebytes).toString(23).toUpperCase();
+			base23lowerstring = new BigInteger(1, filebytes).toString(23);
+			base24upperstring = new BigInteger(1, filebytes).toString(24).toUpperCase();
+			base24lowerstring = new BigInteger(1, filebytes).toString(24);
+			base25upperstring = new BigInteger(1, filebytes).toString(25).toUpperCase();
+			base25lowerstring = new BigInteger(1, filebytes).toString(25);
+			base26upperstring = new BigInteger(1, filebytes).toString(26).toUpperCase();
+			base26lowerstring = new BigInteger(1, filebytes).toString(26);
+			base27upperstring = new BigInteger(1, filebytes).toString(27).toUpperCase();
+			base27lowerstring = new BigInteger(1, filebytes).toString(27);
+			base28upperstring = new BigInteger(1, filebytes).toString(28).toUpperCase();
+			base28lowerstring = new BigInteger(1, filebytes).toString(28);
+			base29upperstring = new BigInteger(1, filebytes).toString(29).toUpperCase();
+			base29lowerstring = new BigInteger(1, filebytes).toString(29);
+			base30upperstring = new BigInteger(1, filebytes).toString(30).toUpperCase();
+			base30lowerstring = new BigInteger(1, filebytes).toString(30);
+			base31upperstring = new BigInteger(1, filebytes).toString(31).toUpperCase();
+			base31lowerstring = new BigInteger(1, filebytes).toString(31);
+			byte[] base32 = b32.encode(filebytes);
+			base32upperstring = new String(base32);
+			base32lowerstring = new String(base32).toLowerCase();
+			base33upperstring = new BigInteger(1, filebytes).toString(33).toUpperCase();
+			base33lowerstring = new BigInteger(1, filebytes).toString(33);
+			base34upperstring = new BigInteger(1, filebytes).toString(34).toUpperCase();
+			base34lowerstring = new BigInteger(1, filebytes).toString(34);
+			base35upperstring = new BigInteger(1, filebytes).toString(35).toUpperCase();
+			base35lowerstring = new BigInteger(1, filebytes).toString(35);
+			base36upperstring = new BigInteger(1, filebytes).toString(36).toUpperCase();
+			base36lowerstring = new BigInteger(1, filebytes).toString(36);
+			byte[] base64 = Base64.getEncoder().encode(filebytes);
+			base64string = new String(base64);
+			byte[] base64uf = Base64.getUrlEncoder().encode(filebytes);
+			base64ufstring = new String(base64uf);
+			byte[] base64mime = Base64.getMimeEncoder().encode(filebytes);
+			// Base64 MIME normally newlines the hash every 76 characters as per RFC 2045,
+			// remove these so it shows up properly in our GUI window
+			base64mimestring = new String(base64mime).replaceAll("\\R", "");
+			byte[] base85 = Ascii85.encode(filebytes);
+			byte[] base85witharrows = Ascii85.addIdentifiers(base85);
+			base85string = new String(base85witharrows);
+			base85nonarrowstring = new String(base85);
+			byte[] base91 = Base91.encode(filebytes);
+			base91string = new String(base91);
+			byte[] base93 = Base93.encode(filebytes);
+			base93string = new String(base93);
+			String base122 = b122.encode(filebytes);
+			base122string = base122;
+			tryEncodeYenc(filebytes);
 			// if the file suddenly doesn't exist, or if an I/O error occurred
 		} catch (IOException e) {
 			log.append("Error when creating file input.\n"); // send this error to the log
 		}
-		filebytes = filebytestream.toByteArray();
-		// generate the hashes/encoded strings and output them to their respective
-		// strings, doing whatever operations are needed to make them display correctly
-		int crc8int = CRC8.calc(filebytes, filebytes.length) & 0xff;
-		crc8string = Integer.toHexString(crc8int).toUpperCase();
-		if (crc8int < 0x10 /* the first number to not have a leading 0 */)
-			crc8string = "0" + crc8string;
-		int crc16int = e16.update(filebytes);
-		crc16string = Integer.toHexString(crc16int).toUpperCase();
-		if (crc16int < 0x1000 /* the first number to not have a leading 0 */)
-			crc16string = "0" + crc16string;
-		e32.update(filebytes);
-		long crc32long = e32.getValue();
-		crc32string = Long.toHexString(crc32long).toUpperCase();
-		if (crc32long < 0x10000000 /* the first number to not have a leading 0 */)
-			crc32string = "0" + crc32string;
-		ae32.update(filebytes);
-		long adler32long = ae32.getValue();
-		adler32string = Long.toHexString(adler32long).toUpperCase();
-		if (adler32long < 0x10000000 /* the first number to not have a leading 0 */)
-			adler32string = "0" + adler32string;
-		e64.update(filebytes);
-		long crc64long = e64.getValue();
-		crc64string = Long.toHexString(crc64long).toUpperCase();
-		if (crc64long < 0x1000000000000000L /* the first number to not have a leading 0 */)
-			crc64string = "0" + crc64string;
-		md2string = DigestUtils.md2Hex(filebytes).toUpperCase();
-		e4.engineUpdate(filebytes, 0, filebytes.length);
-		byte[] md4hashbytes = e4.engineDigest();
-		md4string = Hexdump.toHexString(md4hashbytes, 0, md4hashbytes.length * 2);
-		exyz.engineUpdate(filebytes, 0, filebytes.length);
-		byte[] xyzhashbytes = exyz.engineDigest();
-		xyzstring = Hexdump.toHexString(xyzhashbytes, 0, xyzhashbytes.length * 2);
-		md5string = DigestUtils.md5Hex(filebytes).toUpperCase();
-		ermd.update(filebytes);
-		byte[] ripemdbytes = ermd.digest();
-		ripemdstring = Hexdump.toHexString(ripemdbytes, 0, ripemdbytes.length * 2);
-		e128.update(filebytes);
-		byte[] ripemd128bytes = e128.digest();
-		ripemd128string = Hexdump.toHexString(ripemd128bytes, 0, ripemd128bytes.length * 2);
-		e160.update(filebytes);
-		byte[] ripemd160bytes = e160.digest();
-		ripemd160string = Hexdump.toHexString(ripemd160bytes, 0, ripemd160bytes.length * 2);
-		e0.update(filebytes);
-		byte[] sha0bytes = e0.digest();
-		sha0string = Hexdump.toHexString(sha0bytes, 0, sha0bytes.length * 2);
-		sha1string = DigestUtils.sha1Hex(filebytes).toUpperCase();
-		sha224string = DigestUtils.sha224Hex(filebytes).toUpperCase();
-		sha256string = DigestUtils.sha256Hex(filebytes).toUpperCase();
-		sha384string = DigestUtils.sha384Hex(filebytes).toUpperCase();
-		sha512string = DigestUtils.sha512Hex(filebytes).toUpperCase();
-		et.update(filebytes);
-		byte[] tigerbytes = et.digest();
-		tigerstring = Hexdump.toHexString(tigerbytes, 0, tigerbytes.length * 2);
-		et2.update(filebytes);
-		byte[] tiger2bytes = et2.digest();
-		tiger2string = Hexdump.toHexString(tiger2bytes, 0, tiger2bytes.length * 2);
-		ew1.update(filebytes);
-		byte[] whirlpool0bytes = ew1.digest();
-		whirlpool0string = Hexdump.toHexString(whirlpool0bytes, 0, whirlpool0bytes.length * 2);
-		ew2.update(filebytes);
-		byte[] whirlpool1bytes = ew2.digest();
-		whirlpool1string = Hexdump.toHexString(whirlpool1bytes, 0, whirlpool1bytes.length * 2);
-		ew.update(filebytes);
-		byte[] whirlpoolbytes = ew.digest();
-		whirlpoolstring = Hexdump.toHexString(whirlpoolbytes, 0, whirlpoolbytes.length * 2);
-		base15upperstring = new BigInteger(1, filebytes).toString(15).toUpperCase();
-		base15lowerstring = new BigInteger(1, filebytes).toString(15);
-		byte[] base16upper = Base16.encode(filebytes);
-		base16upperstring = new String(base16upper);
-		byte[] base16lower = Base16Lower.encode(filebytes);
-		base16lowerstring = new String(base16lower);
-		base17upperstring = new BigInteger(1, filebytes).toString(17).toUpperCase();
-		base17lowerstring = new BigInteger(1, filebytes).toString(17);
-		base18upperstring = new BigInteger(1, filebytes).toString(18).toUpperCase();
-		base18lowerstring = new BigInteger(1, filebytes).toString(18);
-		base19upperstring = new BigInteger(1, filebytes).toString(19).toUpperCase();
-		base19lowerstring = new BigInteger(1, filebytes).toString(19);
-		base20upperstring = new BigInteger(1, filebytes).toString(20).toUpperCase();
-		base20lowerstring = new BigInteger(1, filebytes).toString(20);
-		base21upperstring = new BigInteger(1, filebytes).toString(21).toUpperCase();
-		base21lowerstring = new BigInteger(1, filebytes).toString(21);
-		base22upperstring = new BigInteger(1, filebytes).toString(22).toUpperCase();
-		base22lowerstring = new BigInteger(1, filebytes).toString(22);
-		base23upperstring = new BigInteger(1, filebytes).toString(23).toUpperCase();
-		base23lowerstring = new BigInteger(1, filebytes).toString(23);
-		base24upperstring = new BigInteger(1, filebytes).toString(24).toUpperCase();
-		base24lowerstring = new BigInteger(1, filebytes).toString(24);
-		base25upperstring = new BigInteger(1, filebytes).toString(25).toUpperCase();
-		base25lowerstring = new BigInteger(1, filebytes).toString(25);
-		base26upperstring = new BigInteger(1, filebytes).toString(26).toUpperCase();
-		base26lowerstring = new BigInteger(1, filebytes).toString(26);
-		base27upperstring = new BigInteger(1, filebytes).toString(27).toUpperCase();
-		base27lowerstring = new BigInteger(1, filebytes).toString(27);
-		base28upperstring = new BigInteger(1, filebytes).toString(28).toUpperCase();
-		base28lowerstring = new BigInteger(1, filebytes).toString(28);
-		base29upperstring = new BigInteger(1, filebytes).toString(29).toUpperCase();
-		base29lowerstring = new BigInteger(1, filebytes).toString(29);
-		base30upperstring = new BigInteger(1, filebytes).toString(30).toUpperCase();
-		base30lowerstring = new BigInteger(1, filebytes).toString(30);
-		base31upperstring = new BigInteger(1, filebytes).toString(31).toUpperCase();
-		base31lowerstring = new BigInteger(1, filebytes).toString(31);
-		byte[] base32 = b32.encode(filebytes);
-		base32upperstring = new String(base32);
-		base32lowerstring = new String(base32).toLowerCase();
-		base33upperstring = new BigInteger(1, filebytes).toString(33).toUpperCase();
-		base33lowerstring = new BigInteger(1, filebytes).toString(33);
-		base34upperstring = new BigInteger(1, filebytes).toString(34).toUpperCase();
-		base34lowerstring = new BigInteger(1, filebytes).toString(34);
-		base35upperstring = new BigInteger(1, filebytes).toString(35).toUpperCase();
-		base35lowerstring = new BigInteger(1, filebytes).toString(35);
-		base36upperstring = new BigInteger(1, filebytes).toString(36).toUpperCase();
-		base36lowerstring = new BigInteger(1, filebytes).toString(36);
-		byte[] base64 = Base64.getEncoder().encode(filebytes);
-		base64string = new String(base64);
-		byte[] base64uf = Base64.getUrlEncoder().encode(filebytes);
-		base64ufstring = new String(base64uf);
-		byte[] base64mime = Base64.getMimeEncoder().encode(filebytes);
-		base64mimestring = new String(base64mime);
-		byte[] base85 = Ascii85.encode(filebytes);
-		byte[] base85witharrows = Ascii85.addIdentifiers(base85);
-		base85string = new String(base85witharrows);
-		base85nonarrowstring = new String(base85);
-		byte[] base91 = Base91.encode(filebytes);
-		base91string = new String(base91);
-		byte[] base93 = Base93.encode(filebytes);
-		base93string = new String(base93);
-		String base122 = b122.encode(filebytes);
-		base122string = base122;
+	}
+
+	public static void tryEncodeYenc(byte[] filebytes) {
 		try {
 			byte[] yenc = eyenc.encode(filebytes);
-			yencstring = new String(yenc);
+			yencstring = new String(yenc, StandardCharsets.UTF_8);
 		} catch (EncoderException e) {
 			e.printStackTrace();
 		}
@@ -600,26 +613,18 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 	public static void getStringHashes(String string) {
 		byte[] stringbytes = string.getBytes();
 		int crc8int = CRC8.calc(stringbytes, stringbytes.length) & 0xff;
-		crc8string = Integer.toHexString(crc8int).toUpperCase();
-		if (crc8int < 0x10 /* the first number to not have a leading 0 */)
-			crc8string = "0" + crc8string;
+		crc8string = String.format("%02X", crc8int);
 		int crc16int = e16.update(stringbytes);
-		crc16string = Integer.toHexString(crc16int).toUpperCase();
-		if (crc16int < 0x1000 /* the first number to not have a leading 0 */)
-			crc16string = "0" + crc16string;
+		crc16string = String.format("%04X", crc16int);
 		e32.update(stringbytes);
 		long crc32long = e32.getValue();
-		crc32string = Long.toHexString(crc32long).toUpperCase();
-		if (crc32long < 0x10000000 /* the first number to not have a leading 0 */)
-			crc32string = "0" + crc32string;
+		crc32string = String.format("%08X", crc32long);
 		ae32.update(stringbytes);
 		long adler32long = ae32.getValue();
-		adler32string = Long.toHexString(adler32long).toUpperCase();
-		if (adler32long < 0x10000000 /* the first number to not have a leading 0 */)
-			adler32string = "0" + adler32string;
+		adler32string = String.format("%08X", adler32long);
 		e64.update(stringbytes);
 		long crc64long = e64.getValue();
-		crc64string = Long.toHexString(crc64long).toUpperCase();
+		crc64string = String.format("%016X", crc64long);
 		md2string = DigestUtils.md2Hex(stringbytes).toUpperCase();
 		e4.engineUpdate(stringbytes, 0, stringbytes.length);
 		byte[] md4hashbytes = e4.engineDigest();
@@ -712,7 +717,9 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 		byte[] base64uf = Base64.getUrlEncoder().encode(stringbytes);
 		base64ufstring = new String(base64uf);
 		byte[] base64mime = Base64.getMimeEncoder().encode(stringbytes);
-		base64mimestring = new String(base64mime);
+		// Base64 MIME normally newlines the hash every 76 characters as per RFC 2045,
+		// remove these so it shows up properly in our GUI window
+		base64mimestring = new String(base64mime).replaceAll("\\R", "");
 		byte[] base85 = Ascii85.encode(stringbytes);
 		byte[] base85witharrows = Ascii85.addIdentifiers(base85);
 		base85string = new String(base85witharrows);

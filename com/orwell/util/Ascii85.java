@@ -1,28 +1,29 @@
 /**
- * Orwell -- A security library for the pathologically paranoid 
- * 
- * Copyright (C) 2013, Jonathan Gillett, All rights reserved. 
- *  
- * This library is free software: you can redistribute it and/or modify 
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
- * 
- * This library is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
- * GNU Lesser General Public License for more details. 
- *  
- * You should have received a copy of the GNU Lesser General Public License 
- * along with this library. If not, see <http://www.gnu.org/licenses/>. 
+ * Orwell -- A security library for the pathologically paranoid
+ *
+ * Copyright (C) 2013, Jonathan Gillett, All rights reserved.
+ *
+ * This library is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.orwell.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Provides support for encoding and decoding using the ASCII85 (Base85)
@@ -33,212 +34,205 @@ import java.util.ArrayList;
  * it
  * results in less overhead by encoding every 4 bytes into 5 bytes in comparison
  * to Base64 which encodes every 3 bytes into 4 bytes.
- * 
+ *
  * @see <a href="http://en.wikipedia.org/wiki/Binary-to-text_encoding"></a>
  * @see <a href="http://en.wikipedia.org/wiki/Ascii85"></a>
  */
 public abstract class Ascii85 {
-    public static final String CHARSET = "ascii";
 
-    /**
-     * Encodes input data in bytes into Ascii85 encoded data, and
-     * returns the encoded data in bytes. The Ascii85 information can
-     * easily be transmitted and stored, similarly to Base64 encoded
-     * data.
-     * 
-     * @param input The input to encode as Ascii85 in bytes
-     * @return A byte array of the encoded data
-     */
-    public static byte[] encode(byte[] input) {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        Ascii85OutputStream ascii85 = new Ascii85OutputStream(buffer);
+	private Ascii85() {
+		// Prevent instantiation
+	}
 
-        try {
-            ascii85.write(input);
-            ascii85.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (ascii85 != null) {
-                try {
-                    ascii85.close();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
+	/**
+	 * Encodes input data in bytes into Ascii85 encoded data, and
+	 * returns the encoded data in bytes. The Ascii85 information can
+	 * easily be transmitted and stored, similarly to Base64 encoded
+	 * data.
+	 *
+	 * @param input The input to encode as Ascii85 in bytes
+	 * @return A byte array of the encoded data
+	 */
+	public static byte[] encode(byte[] input) {
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		Ascii85OutputStream ascii85 = new Ascii85OutputStream(buffer);
 
-        return removeIdentifiers(buffer.toByteArray());
-    }
+		try {
+			ascii85.write(input);
+			ascii85.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				ascii85.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
 
-    /**
-     * Encodes input data in bytes into Ascii85 encoded data, and
-     * returns the encoded data in bytes. The Ascii85 information can
-     * easily be transmitted and stored, similarly to Base64 encoded
-     * data.
-     * 
-     * @param input The input to encode as Ascii85 in bytes
-     * @return A String representation of the encoded data
-     */
-    public static String encodeToString(byte[] input) {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        Ascii85OutputStream ascii85 = new Ascii85OutputStream(buffer);
-        String output = "";
+		return removeIdentifiers(buffer.toByteArray());
+	}
 
-        try {
-            ascii85.write(input);
-            ascii85.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (ascii85 != null) {
-                try {
-                    ascii85.close();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
+	/**
+	 * Encodes input data in bytes into Ascii85 encoded data, and
+	 * returns the encoded data in bytes. The Ascii85 information can
+	 * easily be transmitted and stored, similarly to Base64 encoded
+	 * data.
+	 *
+	 * @param input The input to encode as Ascii85 in bytes
+	 * @return A String representation of the encoded data
+	 */
+	public static String encodeToString(byte[] input) {
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		Ascii85OutputStream ascii85 = new Ascii85OutputStream(buffer);
+		String output = "";
 
-        try {
-            output = removeIdentifiers(buffer.toString(CHARSET));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+		try {
+			ascii85.write(input);
+			ascii85.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				ascii85.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
 
-        return output;
-    }
+		output = removeIdentifiers(buffer.toString(StandardCharsets.US_ASCII));
 
-    /**
-     * Decodes the Ascii85 encoded input into bytes, and returns the
-     * original data in bytes.
-     * 
-     * @param input The encode as Ascii85 data in bytes
-     * @return A byte array of the original decoded data
-     */
-    public static byte[] decode(byte[] input) {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(addIdentifiers(input));
-        Ascii85InputStream ascii85 = new Ascii85InputStream(inputStream);
-        ArrayList<Byte> bytes = new ArrayList<Byte>();
+		return output;
+	}
 
-        try {
-            int b = ascii85.read();
+	/**
+	 * Decodes the Ascii85 encoded input into bytes, and returns the
+	 * original data in bytes.
+	 *
+	 * @param input The encode as Ascii85 data in bytes
+	 * @return A byte array of the original decoded data
+	 */
+	public static byte[] decode(byte[] input) {
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(addIdentifiers(input));
+		Ascii85InputStream ascii85 = new Ascii85InputStream(inputStream);
+		ArrayList<Byte> bytes = new ArrayList<>();
 
-            while (b != -1000) {
-                bytes.add(Byte.valueOf((byte) b));
-                b = ascii85.read();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                ascii85.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
+		try {
+			int b = ascii85.read();
 
-        /* Convert the Ascii85 Byte representation to byte */
-        byte[] output = new byte[bytes.size()];
-        for (int i = 0; i < output.length; ++i) {
-            output[i] = bytes.get(i).byteValue();
-        }
+			while (b != -1000) {
+				bytes.add(Byte.valueOf((byte) b));
+				b = ascii85.read();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				ascii85.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
 
-        return output;
-    }
+		/* Convert the Ascii85 Byte representation to byte */
+		byte[] output = new byte[bytes.size()];
+		for (int i = 0; i < output.length; ++i) {
+			output[i] = bytes.get(i).byteValue();
+		}
 
-    /**
-     * Decodes the Ascii85 encoded input as a String, and returns the
-     * original data in bytes.
-     * 
-     * @param input The encode as Ascii85 data in bytes
-     * @return A byte array of the original decoded data
-     */
-    public static byte[] decode(String input) {
-        ByteArrayInputStream inputStream = null;
-        Ascii85InputStream ascii85 = null;
-        ArrayList<Byte> bytes = new ArrayList<Byte>();
+		return output;
+	}
 
-        /* Initialize the streams used */
-        try {
-            inputStream = new ByteArrayInputStream(addIdentifiers(input.getBytes(CHARSET)));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+	/**
+	 * Decodes the Ascii85 encoded input as a String, and returns the
+	 * original data in bytes.
+	 *
+	 * @param input The encode as Ascii85 data in bytes
+	 * @return A byte array of the original decoded data
+	 */
+	public static byte[] decode(String input) {
+		ByteArrayInputStream inputStream = null;
+		Ascii85InputStream ascii85 = null;
+		ArrayList<Byte> bytes = new ArrayList<>();
 
-        ascii85 = new Ascii85InputStream(inputStream);
+		/* Initialize the streams used */
+		inputStream = new ByteArrayInputStream(addIdentifiers(input.getBytes(StandardCharsets.US_ASCII)));
 
-        try {
-            int b = ascii85.read();
+		ascii85 = new Ascii85InputStream(inputStream);
 
-            while (b != -1000) {
-                bytes.add(Byte.valueOf((byte) b));
-                b = ascii85.read();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (ascii85 != null) {
-                try {
-                    ascii85.close();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
+		try {
+			int b = ascii85.read();
 
-        /* Convert the Ascii85 Byte representation to byte */
-        byte[] output = new byte[bytes.size()];
-        for (int i = 0; i < output.length; ++i) {
-            output[i] = bytes.get(i).byteValue();
-        }
+			while (b != -1000) {
+				bytes.add(Byte.valueOf((byte) b));
+				b = ascii85.read();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				ascii85.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
 
-        return output;
-    }
+		/* Convert the Ascii85 Byte representation to byte */
+		byte[] output = new byte[bytes.size()];
+		for (int i = 0; i < output.length; ++i) {
+			output[i] = bytes.get(i).byteValue();
+		}
 
-    /**
-     * Adds back the redundant <~ and ~>, which are part of the Ascii85
-     * encoding scheme so that it can be properly decoded.
-     * 
-     * @param input The Ascii85 input to add the redundant encoding to
-     * @return The input with the redundant encoding added back
-     */
-    public static byte[] addIdentifiers(byte[] input) {
-        byte[] output = new byte[input.length + 4];
-        output[0] = (byte) '<';
-        output[1] = (byte) '~';
-        output[output.length - 2] = (byte) '~';
-        output[output.length - 1] = (byte) '>';
+		return output;
+	}
 
-        System.arraycopy(input, 0, output, 2, input.length);
+	/**
+	 * Adds back the redundant <~ and ~>, which are part of the Ascii85
+	 * encoding scheme so that it can be properly decoded.
+	 *
+	 * @param input The Ascii85 input to add the redundant encoding to
+	 * @return The input with the redundant encoding added back
+	 */
+	public static byte[] addIdentifiers(byte[] input) {
+		byte[] output = new byte[input.length + 4];
+		output[0] = (byte) '<';
+		output[1] = (byte) '~';
+		output[output.length - 2] = (byte) '~';
+		output[output.length - 1] = (byte) '>';
 
-        return output;
-    }
+		System.arraycopy(input, 0, output, 2, input.length);
 
-    /**
-     * Removes the redundant <~ and ~>, which are part of the Ascii85
-     * encoding scheme, I know this breaks the standard, but to hell with
-     * standards!
-     * 
-     * @param input The Ascii85 input to remove the redundant encoding from
-     * @return The input with the redundant encoding removed
-     */
-    public static byte[] removeIdentifiers(byte[] input) {
-        byte[] output = new byte[input.length - 4];
+		return output;
+	}
 
-        System.arraycopy(input, 2, output, 0, input.length - 4);
-        return output;
-    }
+	/**
+	 * Removes the redundant <~ and ~>, which are part of the Ascii85
+	 * encoding scheme, I know this breaks the standard, but to hell with
+	 * standards!
+	 *
+	 * @param input The Ascii85 input to remove the redundant encoding from
+	 * @return The input with the redundant encoding removed
+	 */
+	public static byte[] removeIdentifiers(byte[] input) {
+		if (input == null
+				|| input.length <= 4
+				|| input[0] != '<'
+				|| input[input.length - 1] != '>'
+				|| !(input[1] == '~' && input[input.length - 2] == '~')) {
+			return input;
+		}
+		return Arrays.copyOfRange(input, 2, input.length - 2);
+	}
 
-    /**
-     * Removes the redundant <~ and ~>, which are part of the Ascii85
-     * encoding scheme, I know this breaks the standard, but to hell with
-     * standards!
-     * 
-     * @param input The Ascii85 input to remove the redundant encoding from
-     * @return The input with the redundant encoding removed
-     */
-    public static String removeIdentifiers(String input) {
-        return input.replaceAll("(^<~|~>$)", "");
-    }
+	/**
+	 * Removes the redundant <~ and ~>, which are part of the Ascii85
+	 * encoding scheme, I know this breaks the standard, but to hell with
+	 * standards!
+	 *
+	 * @param input The Ascii85 input to remove the redundant encoding from
+	 * @return The input with the redundant encoding removed
+	 */
+	public static String removeIdentifiers(String input) {
+		return input.replaceAll("(^<~)|(\\~>$)", "");
+	}
 }

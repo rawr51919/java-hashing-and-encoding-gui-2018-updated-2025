@@ -32,14 +32,14 @@ jobs:
       - name: Compile CRencodingGUI
         run: |
           mkdir -p target/CRencodingGUI
-          javac -d target/CRencodingGUI $(find . -name "*.java" ! -name "CRhashingGUI.java")
+          javac -d target/CRencodingGUI CRencodingGUI.java
           jar cfe target/CRencodingGUI.jar CRencodingGUI -C target/CRencodingGUI .
 
       # Build CRhashingGUI
       - name: Compile CRhashingGUI
         run: |
           mkdir -p target/CRhashingGUI
-          javac -d target/CRhashingGUI $(find . -name "*.java" ! -name "CRencodingGUI.java")
+          javac -d target/CRhashingGUI CRhashingGUI.java
           jar cfe target/CRhashingGUI.jar CRhashingGUI -C target/CRhashingGUI .
 
       - name: Create GitHub Release

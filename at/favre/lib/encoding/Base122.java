@@ -1,13 +1,13 @@
 package at.favre.lib.encoding;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+// import java.util.logging.Level
+// import java.util.logging.Logger
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 
 public class Base122 {
-	private static final Logger logger = Logger.getLogger(Base122.class.getName());
+	// private static final Logger logger = Logger.getLogger(Base122.class.getName())
 	private static final byte K_SHORTENED = 0b111; // Uses the illegal index to signify the last two-byte char encodes <= 7 bits.
 	private static final byte[] ILLEGAL_BYTES = new byte[] {
 			0 // Null
@@ -54,7 +54,7 @@ public class Base122 {
 				secondPart >>>= 8 - curBit;
 				return (byte) (firstPart | secondPart);
 			} finally {
-				logger.log(Level.INFO, "curByte: {0}, curBit: {1}", new Object[] { curIndex, curBit });
+				// logger.log(Level.INFO, "curByte: {0}, curBit: {1}", new Object[] { curIndex, curBit })
 			}
 		}
 
