@@ -33,6 +33,8 @@ jobs:
         run: |
           mkdir -p target/CRencodingGUI
           javac -d target/CRencodingGUI $(find . -name "*.java" ! -name "CRhashingGUI.java")
+          # Copy images folder into target directory to be included in the jar
+          cp -r images target/CRencodingGUI/
           jar cfe target/CRencodingGUI.jar CRencodingGUI -C target/CRencodingGUI .
 
       # Build CRhashingGUI
@@ -40,6 +42,8 @@ jobs:
         run: |
           mkdir -p target/CRhashingGUI
           javac -d target/CRhashingGUI $(find . -name "*.java" ! -name "CRencodingGUI.java")
+          # Copy images folder into target directory to be included in the jar
+          cp -r images target/CRhashingGUI/
           jar cfe target/CRhashingGUI.jar CRhashingGUI -C target/CRhashingGUI .
 
       # Test builds
