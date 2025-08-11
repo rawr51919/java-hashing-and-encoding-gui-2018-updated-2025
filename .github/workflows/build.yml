@@ -133,8 +133,8 @@ jobs:
           jpackage --name CRencodingGUI --input target --main-jar CRencodingGUI.jar --main-class CRencodingGUI --type dmg --dest target/installer/macos
           jpackage --name CRhashingGUI --input target --main-jar CRhashingGUI.jar --main-class CRhashingGUI --type dmg --dest target/installer/macos
           for dmg in target/installer/macos/*.dmg; do
-            base=$(basename "$dmg" .dmg)
-            mv "$dmg" "target/installer/macos/${base}-macos.dmg"
+            newname=$(echo "$dmg" | sed 's/-1\.0\.dmg$/-macos.dmg/')
+            mv "$dmg" "$newname"
           done
 
       - name: Upload macOS artifacts
