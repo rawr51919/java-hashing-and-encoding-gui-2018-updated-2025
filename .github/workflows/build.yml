@@ -210,11 +210,6 @@ jobs:
         with:
           name: crhashinggui-linux-jar
 
-      - name: Rename JAR files for release
-        run: |
-          mv crencodinggui-linux-jar CRencodingGUI.jar
-          mv crhashinggui-linux-jar CRhashingGUI.jar
-
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
