@@ -61,12 +61,14 @@ import rawr.util.Base93;
 import at.favre.lib.encoding.Base122;
 import org.apache.geronimo.mail.util.UUEncode;
 import org.mesh4j.sync.utils.YEnc;
+import rawr.util.HexagramEncode;
 // MD2-SHA512 hash imports
 import org.apache.commons.codec.digest.DigestUtils;
 import jcifs.util.MD4;
 // XYZ hash import (the algorithm of said hash is from https://docstore.mik.ua/orelly/java-ent/security/ch09_03.htm)
 import com.xyz.XYZMessageDigest;
 // Misc imports
+import java.util.Arrays;
 import jcifs.util.Hexdump;
 import org.apache.commons.codec.EncoderException;
 
@@ -152,6 +154,7 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 	protected static String base122string;
 	protected static String uuencodestring;
 	protected static String yencstring;
+	protected static String hexencstring;
 	protected File file;
 	protected static File outputfile;
 	JButton openButton;
@@ -181,7 +184,6 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 	public static final Base32 b32 = new Base32();
 	public static final Base122 b122 = new Base122();
 	public static final YEnc eyenc = new YEnc();
-
 	public static void main(String[] args) {
         if (Boolean.getBoolean("java.awt.headless") || GraphicsEnvironment.isHeadless()) {
             logger.severe("Error: This GUI cannot be run in headless mode.");
@@ -444,6 +446,7 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 		log.append("Base122: " + base122string + "\n");
 		log.append("UUEncode: " + uuencodestring + "\n");
 		log.append("yEnc: " + yencstring + "\n");
+		log.append("HexagramEncode:" + hexencstring + "\n");
 	}
 
 	private static ImageIcon createImageIcon(String path) {
@@ -607,6 +610,10 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 			byte[] uuenc = UUEncode.encode(filebytes);
 			uuencodestring = new String(uuenc).replaceAll("\\R", "");
 			tryEncodeYenc(filebytes);
+			// HexagramEncode normally newlines the hash every 76 characters as per RFC 2045,
+			// remove these so it shows up properly in our GUI window
+			String hexenc = HexagramEncode.encode(Arrays.toString(filebytes)).replaceAll("\\R", "");
+			hexencstring = hexenc;
 			// if the file suddenly doesn't exist, or if an I/O error occurred
 		} catch (IOException e) {
 			log.append("Error when creating file input.\n"); // send this error to the log
@@ -748,9 +755,13 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 		uuencodestring = new String(uuenc).replaceAll("\\R", "");
 		try {
 			byte[] yenc = eyenc.encode(stringbytes);
-			yencstring = new String(yenc);
+			yencstring = new String(yenc, StandardCharsets.UTF_8);
 		} catch (EncoderException e) {
 			e.printStackTrace();
 		}
+		// HexagramEncode normally newlines the hash every 76 characters as per RFC 2045,
+		// remove these so it shows up properly in our GUI window
+		String hexenc = HexagramEncode.encode(Arrays.toString(stringbytes)).replaceAll("\\R", "");
+		hexencstring = hexenc;
 	}
 }
