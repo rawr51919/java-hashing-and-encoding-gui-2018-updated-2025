@@ -1,9 +1,10 @@
-name: Build, Package, and Release Java GUIs
+name: Compile, Build, Package, and Release Java GUIs
 
 on:
   push:
     branches:
       - main
+
   workflow_dispatch:
     inputs:
       release_type:
@@ -12,25 +13,29 @@ on:
         default: ""
 
 permissions:
-  contents: write
+  contents: write   # needed to create releases
 
 jobs:
   build-linux:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-java@v4
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
         with:
-          java-version: "24"
-          distribution: "temurin"
-      - name: Build JARs for Linux
+          java-version: '24'
+          distribution: 'temurin'
+
+      - name: Compile JARs for Linux
         run: |
-          mkdir -p target/CRencodingGUI
-          mkdir -p target/CRhashingGUI
+          mkdir -p target/CRencodingGUI target/CRhashingGUI
           javac -d target/CRencodingGUI $(find . -name "*.java" ! -name "CRhashingGUI.java")
           jar cfe target/CRencodingGUI.jar CRencodingGUI -C target/CRencodingGUI .
           javac -d target/CRhashingGUI $(find . -name "*.java" ! -name "CRencodingGUI.java")
           jar cfe target/CRhashingGUI.jar CRhashingGUI -C target/CRhashingGUI .
+
       - name: Package Linux installers
         run: |
           mkdir -p target/installer/linux
@@ -41,48 +46,81 @@ jobs:
           zip -r target/installer/linux/CRencodingGUI-linux.zip target/installer/linux/CRencodingGUI-linux
           zip -r target/installer/linux/CRhashingGUI-linux.zip target/installer/linux/CRhashingGUI-linux
 
+      - name: Upload Linux artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: crencodinggui-linux
+          path: target/installer/linux/CRencodingGUI-linux.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: crhashinggui-linux
+          path: target/installer/linux/CRhashingGUI-linux.zip
+
   build-windows:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-java@v4
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
         with:
-          java-version: "24"
-          distribution: "temurin"
-      - name: Build JARs for Windows
+          java-version: '24'
+          distribution: 'temurin'
+
+      - name: Compile JARs for Windows
+        shell: pwsh
         run: |
           mkdir target\CRencodingGUI
           mkdir target\CRhashingGUI
-          javac -d target\CRencodingGUI $(Get-ChildItem -Path . -Recurse -Filter *.java | Where-Object { $_.Name -ne 'CRhashingGUI.java' } | ForEach-Object { $_.FullName })
+          javac -d target\CRencodingGUI (Get-ChildItem -Path . -Recurse -Filter *.java | Where-Object { $_.Name -ne 'CRhashingGUI.java' } | ForEach-Object { $_.FullName }) -join ' '
           jar cfe target\CRencodingGUI.jar CRencodingGUI -C target\CRencodingGUI .
-          javac -d target\CRhashingGUI $(Get-ChildItem -Path . -Recurse -Filter *.java | Where-Object { $_.Name -ne 'CRencodingGUI.java' } | ForEach-Object { $_.FullName })
+          javac -d target\CRhashingGUI (Get-ChildItem -Path . -Recurse -Filter *.java | Where-Object { $_.Name -ne 'CRencodingGUI.java' } | ForEach-Object { $_.FullName }) -join ' '
           jar cfe target\CRhashingGUI.jar CRhashingGUI -C target\CRhashingGUI .
+
       - name: Package Windows installers
+        shell: pwsh
         run: |
           mkdir target\installer\windows
           jpackage --name CRencodingGUI --input target --main-jar CRencodingGUI.jar --main-class CRencodingGUI --type msi --dest target\installer\windows
           jpackage --name CRhashingGUI --input target --main-jar CRhashingGUI.jar --main-class CRhashingGUI --type msi --dest target\installer\windows
           Get-ChildItem target\installer\windows\*.msi | ForEach-Object {
-            $newName = $_.BaseName + '-windows' + $_.Extension
-            Rename-Item $_.FullName -NewName $newName
+            $newName = "$($_.BaseName)-windows$($_.Extension)"
+            Rename-Item $_.FullName $newName
           }
+
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: crencodinggui-windows
+          path: target\installer\windows\*CRencodingGUI-windows.msi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: crhashinggui-windows
+          path: target\installer\windows\*CRhashingGUI-windows.msi
 
   build-macos:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-java@v4
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
         with:
-          java-version: "24"
-          distribution: "temurin"
-      - name: Build JARs for macOS
+          java-version: '24'
+          distribution: 'temurin'
+
+      - name: Compile JARs for macOS
         run: |
-          mkdir -p target/CRencodingGUI
-          mkdir -p target/CRhashingGUI
+          mkdir -p target/CRencodingGUI target/CRhashingGUI
           javac -d target/CRencodingGUI $(find . -name "*.java" ! -name "CRhashingGUI.java")
           jar cfe target/CRencodingGUI.jar CRencodingGUI -C target/CRencodingGUI .
           javac -d target/CRhashingGUI $(find . -name "*.java" ! -name "CRencodingGUI.java")
           jar cfe target/CRhashingGUI.jar CRhashingGUI -C target/CRhashingGUI .
+
       - name: Package macOS installers
         run: |
           mkdir -p target/installer/macos
@@ -93,21 +131,64 @@ jobs:
             mv "$dmg" "target/installer/macos/${base}-macos.dmg"
           done
 
+      - name: Upload macOS artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: crencodinggui-macos
+          path: target/installer/macos/*-macos.dmg
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: crhashinggui-macos
+          path: target/installer/macos/*-macos.dmg
+
   release:
     needs: [build-linux, build-windows, build-macos]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Download Linux artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: crencodinggui-linux
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: crhashinggui-linux
+
+      - name: Download Windows artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: crencodinggui-windows
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: crhashinggui-windows
+
+      - name: Download macOS artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: crencodinggui-macos
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: crhashinggui-macos
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
           prerelease: ${{ github.event.inputs.release_type != 'main' }}
           files: |
+            CRencodingGUI-linux.zip
+            CRhashingGUI-linux.zip
+            *CRencodingGUI-windows.msi
+            *CRhashingGUI-windows.msi
+            *CRencodingGUI-macos.dmg
+            *CRhashingGUI-macos.dmg
             target/CRencodingGUI.jar
             target/CRhashingGUI.jar
-            target/installer/linux/*.zip
-            target/installer/windows/*.msi
-            target/installer/macos/*.dmg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
