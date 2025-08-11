@@ -76,13 +76,13 @@ jobs:
           mkdir target\CRhashingGUI
 
           $filesEnc = Get-ChildItem -Path . -Recurse -Filter *.java | Where-Object { $_.Name -ne 'CRhashingGUI.java' } | ForEach-Object { $_.FullName }
-          $filesEncString = $filesEnc -join ' '
-          javac -d target\CRencodingGUI $filesEncString
+          javac -d target\CRencodingGUI @filesEnc
+
           jar cfe target\CRencodingGUI.jar CRencodingGUI -C target\CRencodingGUI .
 
           $filesHash = Get-ChildItem -Path . -Recurse -Filter *.java | Where-Object { $_.Name -ne 'CRencodingGUI.java' } | ForEach-Object { $_.FullName }
-          $filesHashString = $filesHash -join ' '
-          javac -d target\CRhashingGUI $filesHashString
+          javac -d target\CRhashingGUI @filesHash
+
           jar cfe target\CRhashingGUI.jar CRhashingGUI -C target\CRhashingGUI .
 
       - name: Package Windows installers
@@ -188,12 +188,12 @@ jobs:
           tag_name: build-${{ github.run_number }}
           prerelease: ${{ github.event.inputs.release_type != 'main' }}
           files: |
-            target/installer/linux/CRencodingGUI-linux.zip
-            target/installer/linux/CRhashingGUI-linux.zip
-            target/installer/windows/*CRencodingGUI-windows.msi
-            target/installer/windows/*CRhashingGUI-windows.msi
-            target/installer/macos/*-macos.dmg
-            target/installer/macos/*-macos.dmg
+            CRencodingGUI-linux.zip
+            CRhashingGUI-linux.zip
+            *CRencodingGUI-windows.msi
+            *CRhashingGUI-windows.msi
+            *CRencodingGUI-macos.dmg
+            *CRhashingGUI-macos.dmg
             target/CRencodingGUI.jar
             target/CRhashingGUI.jar
         env:
