@@ -200,12 +200,12 @@ jobs:
       - name: Download encoding GUI JAR
         uses: actions/download-artifact@v4
         with:
-          name: CRencodingGUI.jar
+          name: crencodinggui-linux-jar
 
       - name: Download hashing GUI JAR
         uses: actions/download-artifact@v4
         with:
-          name: CRhashingGUI.jar
+          name: crhashinggui-linux-jar
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
