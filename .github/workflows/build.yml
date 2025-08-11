@@ -52,17 +52,17 @@ jobs:
 
       - name: Test CRencodingGUI jar with Xvfb
         run: |
-          Xvfb :99 -screen 0 1024x768x24 &
+          Xvfb :99 -screen 0 1024x768x24 -noreset -nolisten tcp > /dev/null 2>&1 &
           sleep 3
           export DISPLAY=:99
-          java -jar target/CRencodingGUI.jar || true
+          timeout 30s java -jar target/CRencodingGUI.jar || true
 
       - name: Test CRhashingGUI jar with Xvfb
         run: |
-          Xvfb :99 -screen 0 1024x768x24 &
+          Xvfb :99 -screen 0 1024x768x24 -noreset -nolisten tcp > /dev/null 2>&1 &
           sleep 3
           export DISPLAY=:99
-          java -jar target/CRhashingGUI.jar || true
+          timeout 30s java -jar target/CRhashingGUI.jar || true
 
       # Create release with functional JARs
       - name: Create GitHub Release
