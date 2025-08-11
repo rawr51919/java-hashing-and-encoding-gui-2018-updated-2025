@@ -33,11 +33,13 @@ jobs:
           mkdir -p target/CRencodingGUI target/CRhashingGUI
           javac -d target/CRencodingGUI $(find . -name "*.java" ! -name "CRhashingGUI.java")
           # Copy images into encoding GUI target folder
-          cp images/*.gif target/CRencodingGUI/
+          mkdir -p target/CRencodingGUI/images
+          cp images/*.gif target/CRencodingGUI/images
           jar cfe target/CRencodingGUI.jar CRencodingGUI -C target/CRencodingGUI .
           javac -d target/CRhashingGUI $(find . -name "*.java" ! -name "CRencodingGUI.java")
           # Copy images into hashing GUI target folder
-          cp images/*.gif target/CRhashingGUI/
+          mkdir -p target/CRhashingGUI/images
+          cp images/*.gif target/CRhashingGUI/images
           jar cfe target/CRhashingGUI.jar CRhashingGUI -C target/CRhashingGUI .
 
       - name: Package Linux installers
@@ -96,7 +98,8 @@ jobs:
           javac -d target\CRencodingGUI @filesEnc
 
           # Copy images into encoding GUI target folder
-          Copy-Item -Path images\*.gif -Destination target\CRencodingGUI\
+          New-Item -ItemType Directory -Path target\CRencodingGUI\images -Force
+          Copy-Item -Path images\*.gif -Destination target\CRencodingGUI\images
 
           jar cfe target\CRencodingGUI.jar CRencodingGUI -C target\CRencodingGUI .
 
@@ -104,7 +107,8 @@ jobs:
           javac -d target\CRhashingGUI @filesHash
 
           # Copy images into hashing GUI target folder
-          Copy-Item -Path images\*.gif -Destination target\CRhashingGUI\
+          New-Item -ItemType Directory -Path target\CRencodingGUI\images -Force
+          Copy-Item -Path images\*.gif -Destination target\CRhashingGUI\images
 
           jar cfe target\CRhashingGUI.jar CRhashingGUI -C target\CRhashingGUI .
 
@@ -148,11 +152,13 @@ jobs:
           mkdir -p target/CRencodingGUI target/CRhashingGUI
           javac -d target/CRencodingGUI $(find . -name "*.java" ! -name "CRhashingGUI.java")
           # Copy images into encoding GUI target folder
-          cp images/*.gif target/CRencodingGUI/
+          mkdir -p target/CRencodingGUI/images
+          cp images/*.gif target/CRencodingGUI/images
           jar cfe target/CRencodingGUI.jar CRencodingGUI -C target/CRencodingGUI .
           javac -d target/CRhashingGUI $(find . -name "*.java" ! -name "CRencodingGUI.java")
           # Copy images into hashing GUI target folder
-          cp images/*.gif target/CRhashingGUI/
+          mkdir -p target/CRhashingGUI/images
+          cp images/*.gif target/CRhashingGUI/images
           jar cfe target/CRhashingGUI.jar CRhashingGUI -C target/CRhashingGUI .
 
       - name: Package macOS installers
