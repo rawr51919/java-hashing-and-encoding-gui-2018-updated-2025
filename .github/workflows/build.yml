@@ -1,10 +1,9 @@
-name: Compile, Build, and Release Java GUIs
+name: Build, Package, and Release Java GUIs
 
 on:
   push:
     branches:
       - main
-
   workflow_dispatch:
     inputs:
       release_type:
@@ -13,65 +12,128 @@ on:
         default: ""
 
 permissions:
-  contents: write   # needed to create releases
+  contents: write
 
 jobs:
-  build:
+
+  build-linux:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '24'
           distribution: 'temurin'
-
-      # Build CRencodingGUI
-      - name: Compile CRencodingGUI
+      - name: Compile CRencodingGUI (Linux)
         run: |
           mkdir -p target/CRencodingGUI
           javac -d target/CRencodingGUI $(find . -name "*.java" ! -name "CRhashingGUI.java")
-          # Copy images folder into target directory to be included in the jar
-          cp -r images target/CRencodingGUI/
           jar cfe target/CRencodingGUI.jar CRencodingGUI -C target/CRencodingGUI .
-
-      # Build CRhashingGUI
-      - name: Compile CRhashingGUI
+      - name: Compile CRhashingGUI (Linux)
         run: |
           mkdir -p target/CRhashingGUI
           javac -d target/CRhashingGUI $(find . -name "*.java" ! -name "CRencodingGUI.java")
-          # Copy images folder into target directory to be included in the jar
-          cp -r images target/CRhashingGUI/
           jar cfe target/CRhashingGUI.jar CRhashingGUI -C target/CRhashingGUI .
-
-      # Test builds
-      - name: Install Xvfb
-        run: sudo apt-get update && sudo apt-get install -y xvfb
-
-      - name: Test CRencodingGUI jar with Xvfb
+      - name: Create Linux installers with jpackage
         run: |
-          Xvfb :99 -screen 0 1024x768x24 -noreset -nolisten tcp > /dev/null 2>&1 &
-          sleep 3
-          export DISPLAY=:99
-          timeout 3s java -jar target/CRencodingGUI.jar || true
-
-      - name: Test CRhashingGUI jar with Xvfb
+          mkdir -p target/installer/linux
+          jpackage --name CRencodingGUI --input target --main-jar CRencodingGUI.jar --main-class CRencodingGUI --type app-image --dest target/installer/linux
+          jpackage --name CRhashingGUI --input target --main-jar CRhashingGUI.jar --main-class CRhashingGUI --type app-image --dest target/installer/linux
+      - name: Archive Linux installers
         run: |
-          Xvfb :99 -screen 0 1024x768x24 -noreset -nolisten tcp > /dev/null 2>&1 &
-          sleep 3
-          export DISPLAY=:99
-          timeout 3s java -jar target/CRhashingGUI.jar || true
+          cd target/installer/linux
+          zip -r CRencodingGUI-linux.zip CRencodingGUI
+          zip -r CRhashingGUI-linux.zip CRhashingGUI
+      - uses: actions/upload-artifact@v3
+        with:
+          name: linux-installers
+          path: target/installer/linux/*.zip
 
-      # Create release with functional JARs
-      - name: Create GitHub Release
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '24'
+          distribution: 'temurin'
+      - name: Compile CRencodingGUI (Windows)
+        run: |
+          mkdir target\CRencodingGUI
+          javac -d target\CRencodingGUI $(Get-ChildItem -Recurse -Filter *.java | Where-Object { $_.Name -ne "CRhashingGUI.java" } | ForEach-Object { $_.FullName })
+          jar cfe target\CRencodingGUI.jar CRencodingGUI -C target\CRencodingGUI .
+      - name: Compile CRhashingGUI (Windows)
+        run: |
+          mkdir target\CRhashingGUI
+          javac -d target\CRhashingGUI $(Get-ChildItem -Recurse -Filter *.java | Where-Object { $_.Name -ne "CRencodingGUI.java" } | ForEach-Object { $_.FullName })
+          jar cfe target\CRhashingGUI.jar CRhashingGUI -C target\CRhashingGUI .
+      - name: Create Windows installers with jpackage
+        run: |
+          mkdir target\installer\windows
+          jpackage --name CRencodingGUI --input target --main-jar CRencodingGUI.jar --main-class CRencodingGUI --type msi --dest target\installer\windows
+          jpackage --name CRhashingGUI --input target --main-jar CRhashingGUI.jar --main-class CRhashingGUI --type msi --dest target\installer\windows
+      - uses: actions/upload-artifact@v3
+        with:
+          name: windows-installers
+          path: target\installer\windows\*
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '24'
+          distribution: 'temurin'
+      - name: Compile CRencodingGUI (macOS)
+        run: |
+          mkdir -p target/CRencodingGUI
+          javac -d target/CRencodingGUI $(find . -name "*.java" ! -name "CRhashingGUI.java")
+          jar cfe target/CRencodingGUI.jar CRencodingGUI -C target/CRencodingGUI .
+      - name: Compile CRhashingGUI (macOS)
+        run: |
+          mkdir -p target/CRhashingGUI
+          javac -d target/CRhashingGUI $(find . -name "*.java" ! -name "CRencodingGUI.java")
+          jar cfe target/CRhashingGUI.jar CRhashingGUI -C target/CRhashingGUI .
+      - name: Create macOS installers with jpackage
+        run: |
+          mkdir -p target/installer/macos
+          jpackage --name CRencodingGUI --input target --main-jar CRencodingGUI.jar --main-class CRencodingGUI --type dmg --dest target/installer/macos
+          jpackage --name CRhashingGUI --input target --main-jar CRhashingGUI.jar --main-class CRhashingGUI --type dmg --dest target/installer/macos
+      - uses: actions/upload-artifact@v3
+        with:
+          name: macos-installers
+          path: target/installer/macos/*
+
+  release:
+    needs: [build-linux, build-windows, build-macos]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: linux-installers
+          path: target/installer/linux
+      - uses: actions/download-artifact@v3
+        with:
+          name: windows-installers
+          path: target/installer/windows
+      - uses: actions/download-artifact@v3
+        with:
+          name: macos-installers
+          path: target/installer/macos
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Upload all artifacts to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
-          prerelease: ${{ inputs.release_type != 'main' }}
+          prerelease: ${{ github.event.inputs.release_type != 'main' }}
           files: |
             target/CRencodingGUI.jar
             target/CRhashingGUI.jar
+            target/installer/linux/CRencodingGUI-linux.zip
+            target/installer/linux/CRhashingGUI-linux.zip
+            target/installer/windows/*.msi
+            target/installer/macos/*.dmg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
