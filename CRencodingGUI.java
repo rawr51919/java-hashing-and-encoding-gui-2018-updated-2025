@@ -301,9 +301,9 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 		JLabel creditslabel = new JLabel(
 				"<html><div style='text-align: center'>Credits:<br>" +
 						"This GUI: rawr51919<br>" +
-						"Based on the FileChooserDemo2 project (https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html#FileChooserDemo2)"
+						"Based on the FileChooserDemo2 project (https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html#FileChooserDemo2)<br>"
 						+
-						"Original project part of the Java Swing tutorial on file choosers (https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html)"
+						"Original project part of the Java Swing tutorial on file choosers (https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html)<br>"
 						+
 						"CRC8 Library: JustFLAC (https://github.com/drogatkin/JustFLAC)<br>" +
 						"CRC16 Library: Original code by Taha Paksu (http://www.tahapaksu.com/crc) and ported by Ethan Trithon (https://github.com/ethantrithon)<br>"
