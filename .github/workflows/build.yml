@@ -57,6 +57,17 @@ jobs:
           name: crhashinggui-linux
           path: target/installer/linux/CRhashingGUI-linux.zip
 
+      - name: Upload JARs
+        uses: actions/upload-artifact@v4
+        with:
+          name: crencodinggui-linux-jar
+          path: target/CRencodingGUI.jar
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: crhashinggui-linux-jar
+          path: target/CRhashingGUI.jar
+
   build-windows:
     runs-on: windows-latest
     steps:
@@ -192,9 +203,9 @@ jobs:
             CRhashingGUI-linux.zip
             CRencodingGUI-windows.msi
             CRhashingGUI-windows.msi
-            target/installer/macos/CRencodingGUI-macos.dmg
-            target/installer/macos/CRhashingGUI-macos.dmg
-            target/CRencodingGUI.jar
-            target/CRhashingGUI.jar
+            CRencodingGUI-macos.dmg
+            CRhashingGUI-macos.dmg
+            CRencodingGUI.jar
+            CRhashingGUI.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
