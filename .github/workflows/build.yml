@@ -92,7 +92,7 @@ jobs:
           jpackage --name CRencodingGUI --input target --main-jar CRencodingGUI.jar --main-class CRencodingGUI --type msi --dest target\installer\windows
           jpackage --name CRhashingGUI --input target --main-jar CRhashingGUI.jar --main-class CRhashingGUI --type msi --dest target\installer\windows
           Get-ChildItem target\installer\windows\*.msi | ForEach-Object {
-            $newName = "$($_.BaseName)-windows$($_.Extension)"
+            $newName = "$($_.BaseName -replace '-1\.0$', '-windows')$($_.Extension)"
             Rename-Item $_.FullName $newName
           }
 
@@ -141,12 +141,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: crencodinggui-macos
-          path: target/installer/macos/*-macos.dmg
+          path: target/installer/macos/CRencodingGUI-macos.dmg
 
       - uses: actions/upload-artifact@v4
         with:
           name: crhashinggui-macos
-          path: target/installer/macos/*-macos.dmg
+          path: target/installer/macos/CRhashingGUI-macos.dmg
 
   release:
     needs: [build-linux, build-windows, build-macos]
@@ -192,8 +192,8 @@ jobs:
             CRhashingGUI-linux.zip
             CRencodingGUI-windows.msi
             CRhashingGUI-windows.msi
-            *CRencodingGUI-macos.dmg
-            *CRhashingGUI-macos.dmg
+            target/installer/macos/CRencodingGUI-macos.dmg
+            target/installer/macos/CRhashingGUI-macos.dmg
             target/CRencodingGUI.jar
             target/CRhashingGUI.jar
         env:

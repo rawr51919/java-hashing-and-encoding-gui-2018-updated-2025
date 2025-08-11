@@ -181,7 +181,7 @@ public class CRencodingGUI extends JPanel implements ActionListener {
 	public static final YEnc eyenc = new YEnc();
 
 	public static void main(String[] args) {
-        if (GraphicsEnvironment.isHeadless()) {
+        if (Boolean.getBoolean("java.awt.headless") || GraphicsEnvironment.isHeadless()) {
             logger.severe("Error: This GUI cannot be run in headless mode.");
             System.exit(1);
         }
