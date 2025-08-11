@@ -44,7 +44,7 @@ jobs:
 
       # Test builds
       - name: Install Xvfb
-        run: sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y xvfb
+        run: sudo apt-get update && sudo apt-get install -y xvfb
 
       - name: Test CRencodingGUI jar with Xvfb
         run: |
