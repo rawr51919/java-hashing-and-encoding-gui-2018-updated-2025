@@ -53,25 +53,25 @@ jobs:
           zip -r target/installer/linux/CRhashingGUI-linux.zip target/installer/linux/CRhashingGUI-linux
 
       - name: Upload Linux encoding GUI installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: crencodinggui-linux
           path: target/installer/linux/CRencodingGUI-linux.zip
 
       - name: Upload Linux hashing GUI installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: crhashinggui-linux
           path: target/installer/linux/CRhashingGUI-linux.zip
 
       - name: Upload encoding GUI JAR
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: crencodinggui-linux-jar
           path: target/CRencodingGUI.jar
 
       - name: Upload hashing GUI JAR
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: crhashinggui-linux-jar
           path: target/CRhashingGUI.jar
@@ -124,13 +124,13 @@ jobs:
           }
 
       - name: Upload Windows encoding GUI installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: crencodinggui-windows
           path: target\installer\windows\CRencodingGUI-windows.msi
 
       - name: Upload Windows hashing GUI installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: crhashinggui-windows
           path: target\installer\windows\CRhashingGUI-windows.msi
@@ -172,13 +172,13 @@ jobs:
           done
 
       - name: Upload macOS encoding GUI installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: crencodinggui-macos
           path: target/installer/macos/CRencodingGUI-macos.dmg
 
       - name: Upload macOS hashing GUI installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: crhashinggui-macos
           path: target/installer/macos/CRhashingGUI-macos.dmg
@@ -191,42 +191,42 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Download Linux encoding GUI installer
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: crencodinggui-linux
 
       - name: Download Linux hashing GUI installer
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: crhashinggui-linux
 
       - name: Download Windows encoding GUI installer
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: crencodinggui-windows
 
       - name: Download Windows hashing GUI installer
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: crhashinggui-windows
 
       - name: Download MacOS encoding GUI installer
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: crencodinggui-macos
 
       - name: Download MacOS hashing GUI installer
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: crhashinggui-macos
 
       - name: Download encoding GUI JAR
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: crencodinggui-linux-jar
 
       - name: Download hashing GUI JAR
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: crhashinggui-linux-jar
 
